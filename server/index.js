@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const productRoutes = require('./routes/ProductRoutes');
+const userRoutes = require('./routes/UserRoutes');
 
 dotenv.config(); // Charger les variables d'environnement
 
@@ -14,13 +15,23 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' })); // Augmenter la limite de la taille de requête
 app.use(express.urlencoded({ limit: '10mb', extended: true })); // Pour les formulaires
 
-// Routes
+// Routes products
 app.use('/products', productRoutes);
+// Routes utilisateur
+app.use('/users', userRoutes);
 
 // Route de base pour tester le serveur
 app.get('/', (req, res) => {
     res.send('Serveur et MongoDB connectés');
 });
+
+// Middleware pour gérer les erreurs
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Quelque chose a mal tourné !');
+});
+
+
 
 // Connexion à MongoDB
 mongoose
